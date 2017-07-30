@@ -13,6 +13,7 @@
     "polymer",
     "web-components"
   ],
+  "homepage": "https://github.com/bradysterling/fitbit-component",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0"
   },

@@ -1,6 +1,7 @@
 # \<fitbit-component\>
 
 Fitbit interface for the polymer library
+Currently being developed...
 
 ## Install the Polymer-CLI
 
