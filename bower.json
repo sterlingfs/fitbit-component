@@ -1,0 +1,27 @@
+{
+  "name": "fitbit-component",
+  "version": "0.0.1",
+  "description": "UNOFFICIAL Fitbit interface for the polymer library",
+  "main": "fitbit-component.html",
+  "authors": [
+    "Brady Sterling"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "fitbit-component",
+    "fitbit",
+    "polymer",
+    "web-components"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.0.0"
+  },
+  "devDependencies": {
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
+  },
+  "resolutions": {
+    "polymer": "^2.0.0"
+  }
+}

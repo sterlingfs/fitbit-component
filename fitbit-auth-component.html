@@ -1,0 +1,39 @@
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+
+<dom-module id="fitbit-auth-component">
+
+  <script>
+    class FitbitAuthComponent extends Polymer.Element {
+      static get is() { return 'fitbit-auth-component'; }
+      static get properties() {
+        return {
+          clientId: String,
+          redirectURI: String,
+          expiration: Number, 
+          scope: {
+            value: FitbitAuthComponent.defaultScope()
+          }
+        };
+      }
+      static defaultScope() {
+        return ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight'] 
+      }
+      authorize() {
+        try {
+          let path = `https://www.fitbit.com/oauth2/authorize?`
+          let params = `response_type=token&client_id=${clientId}&redirect_uri=${redirectURI}&scope=${encodeURI(scope.join(','))}&expires_in=${expiration}`
+          window.location = path + params;
+        } catch(e) {
+          console.error('FitbitAuthComponent config error:', e)
+        }
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        this.authorize();
+      }
+    }
+
+    window.customElements.define(FitbitAuthComponent.is, FitbitAuthComponent);
+  </script>
+</dom-module>

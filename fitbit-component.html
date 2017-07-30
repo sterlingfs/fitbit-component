@@ -1,0 +1,32 @@
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+<link rel="import" href="./fitbit-auth-component.html"> 
+
+<dom-module id="fitbit-component">
+
+  <template>
+
+    <fitbit-auth-component></fitbit-auth-component>
+
+  </template>
+
+  <script>
+    /**
+     * `fitbit-component`
+     * Fitbit interface for the polymer library
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class FitbitComponent extends Polymer.Element {
+      static get is() { return 'fitbit-component'; }
+      // static get properties() {
+      //   return {
+      //   };
+      // }
+
+    }
+
+    window.customElements.define(FitbitComponent.is, FitbitComponent);
+  </script>
+</dom-module>
