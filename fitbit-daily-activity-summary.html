@@ -1,0 +1,36 @@
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+<link rel="import" href="./fitbit-activity.html">;
+
+<dom-module id="fitbit-daily-activity-summary">
+
+  <script>
+
+    class FitbitDailyActivitySummary extends FitbitActivity {
+      static get is() { return 'fitbit-daily-activity-summary'; }
+      static get properties() {
+        return {
+          date: { type: String },
+          data: { type: Object, notify: true, readonly: true }
+        }
+      }
+      static get observers() {
+        return [
+          '__getData(token, date)'
+        ]
+      }
+
+      async __getData(token, date) {
+        if (token, date) {
+          let hdrs = new Headers({ 'Authorization': `Bearer ${token}` });
+          let response = await fetch(`https://api.fitbit.com/1/user/-/activities/date/${date}.json`, { headers: hdrs });
+          response.json().then(json => this.data = json);
+        } else {
+          this.data = null;
+        }
+      }
+      
+    }
+
+    window.customElements.define(FitbitDailyActivitySummary.is, FitbitDailyActivitySummary);
+  </script>
+</dom-module>

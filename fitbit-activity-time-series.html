@@ -1,0 +1,38 @@
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+<link rel="import" href="./fitbit-activity.html">;
+
+<dom-module id="fitbit-activity-time-series">
+
+  <script>
+
+    class FitbitActivityTimeSeries extends FitbitActivity {
+      static get is() { return 'fitbit-activity-time-series'; }
+      static get properties() {
+        return {
+          resourcePath: String,
+          date: String,
+          period: String,
+          data: { type: Object, notify: true, readonly: true }
+        }
+      }
+      static get observers() {
+        return [
+          '__getData(token, resourcePath, date, period)'
+        ]
+      }
+
+      async __getData(token, resourcePath, date, period) {
+        if (token, resourcePath, date, period) {
+          let hdrs = new Headers({ 'Authorization': `Bearer ${token}` });
+          let response = await fetch(`https://api.fitbit.com/1/user/-/${resourcePath}/date/${date}/${period}.json`, { headers: hdrs });
+          response.json().then(json => this.data = json);
+        } else {
+          this.data = null;
+        }
+      }
+      
+    }
+
+    window.customElements.define(FitbitActivityTimeSeries.is, FitbitActivityTimeSeries);
+  </script>
+</dom-module>

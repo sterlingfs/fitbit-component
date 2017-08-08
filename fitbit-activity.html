@@ -1,0 +1,33 @@
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+
+<dom-module id="fitbit-activity">
+
+  <script>
+
+    class FitbitActivity extends Polymer.Element {
+      static get is() { return 'fitbit-activity'; }
+      static get properties() {
+        return {
+          token: String,
+          activities: Object
+        }
+      }
+      static get observers() {
+        return [
+          '__activities(token)'
+        ]
+      }
+      async __activities(token) {
+        if (token) {
+          let hdrs = new Headers({ 'Authorization': `Bearer ${token}` });
+          let response = await fetch('https://api.fitbit.com/1/activities.json', { headers: hdrs });
+          response.json().then(json => this.activities = json);
+        } else {
+          this.activities = null;
+        }
+      }
+    }
+
+    window.customElements.define(FitbitActivity.is, FitbitActivity);
+  </script>
+</dom-module>

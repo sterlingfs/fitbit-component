@@ -1,0 +1,79 @@
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+
+<dom-module id="fitbit-auth">
+
+  <script>
+    class FitbitAuth extends Polymer.Element {
+      static get is() { return 'fitbit-auth'; }
+      static get properties() {
+        return {
+          signedIn: { type: Boolean, notify: true, readonly: true },
+          token: { type: String, notify: true, readonly: true, value: window.localStorage.getItem('fitbit_access_token') },
+          user: { type: Object, notify: true, readonly: true },
+          userBadges: { type: Object, notify: true },
+          responseType: { type: String, readonly: true, value: 'token' },
+          clientId: String,
+          redirectUri: String,
+          scope: { type: Array, value: FitbitAuth.defaultScope },
+          expiresIn: { type: Number, value: 2592000 }
+        };
+      }
+      static get observers() {
+        return [
+          '__getUser(token)',
+          '__getUserBadges(token)'
+        ]
+      }
+      static get path() { return 'https://www.fitbit.com/oauth2/authorize?'; }
+      static get defaultScope() { return ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight'] }
+
+      connectedCallback() {
+        super.connectedCallback()
+        let hash = new String(window.location.hash);
+        if (hash.length > 0) {
+          window.location.hash = '';
+          this.token = this.__parseHash(hash)['access_token']
+          window.localStorage.setItem('fitbit_access_token', this.token);
+        }
+      }
+      __authorizationURL() {
+        try {
+          let query = `response_type=${this.responseType}&client_id=${this.clientId}&redirect_uri=${encodeURIComponent(this.redirectUri)}&scope=${encodeURI(this.scope.join(' '))}&expires_in=${this.expiresIn}`
+          return FitbitAuth.path + query;
+        } catch (e) {
+          console.error('FitbitAuth config error:', e)
+          return null;
+        }
+      }
+      __parseHash(hash) {
+        if (hash.length > 0) {
+          let stg = hash.slice(1);
+          let stgArray = stg.split('&');
+          let nestedArray = stgArray.reduce((a, c) => a.concat([c.split('=')]), []);
+          return nestedArray.reduce((a, c) => Object.assign({}, a, { [c[0]]: c[1] }), {});
+        } else {
+          return null;
+        }
+      }
+      async __getUser(token) {
+        let hdrs = new Headers({ 'Authorization': `Bearer ${token}` });
+        let response = await fetch('https://api.fitbit.com/1/user/-/profile.json', { headers: hdrs });
+        let user = await response.json();
+        user.then(json => this.user = json);
+      }
+      async __getUserBadges(token) {
+        let hdrs = new Headers({ 'Authorization': `Bearer ${token}` });
+        let response = await fetch('https://api.fitbit.com/1/user/-/badges.json', { headers: hdrs });
+        let badges = await response.json();
+        badges.then(json => this.badges = json);
+      }
+      signInWithRedirect() {
+        window.location = this.__authorizationURL();
+      }
+
+      // signInWithPopup() {}
+    }
+
+    window.customElements.define(FitbitAuth.is, FitbitAuth);
+  </script>
+</dom-module>

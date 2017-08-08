@@ -1,0 +1,124 @@
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+<link rel="import" href="./fitbit-activity.html">;
+
+
+<dom-module id="fitbit-activity-log-list">
+
+  <script>
+
+    /*
+      # Individual Activity Interface:  
+
+      "activeDuration": 1734000,
+      "activityLevel": [{
+          "minutes": 4,
+          "name": "sedentary"
+      }],
+      "activityName": "FitStar: Personal Trainer",
+      "activityTypeId": 17589491,
+      "averageHeartRate": 94,
+      "calories": 136,
+      "caloriesLink": "https://api.fitbit.com/1/user/-/activities/calories/date/2016-03-29/2016-03-29/1min/time/8:45/9:13.json",
+      "distance": 1.071811,
+      "distanceUnit": "Kilometer",
+      "duration": 1734000,
+      "heartRateLink": "https://api.fitbit.com/1/user/-/activities/heart/date/2016-03-29/2016-03-29/1sec/time/08:45:00/09:13:54.json",
+      "heartRateZones": [{
+          "max": 94,
+          "min": 30,
+          "minutes": 16,
+          "name": "Out of Range"
+      }],
+      "lastModified": "2016-03-29T17:41:53.000Z",
+      "logId": 2067350363,
+      "logType": "fitstar",
+      "manualValuesSpecified": {
+          "calories": false,
+          "distance": false,
+          "steps": false
+      },
+      "source": {
+          "id": "228T4Z",
+          "name": "FitStar",
+          "type": "app",
+          "url": "http://www.fitstar.com"
+      },
+      "speed": 2.2252131487889275,
+      "startTime": "2016-03-29T08:45:00.000-07:00",
+      "steps": 1354
+    */
+
+    
+    class FitbitActivityLogList extends FitbitActivity {
+      static get is() { return 'fitbit-activity-log-list'; }
+      static get properties() {
+        return {
+          baseDate: { type: String, value: 'today' },
+          sort: { type: String, value: 'desc' },
+          limit: { type: Number, value: 20 },
+          data: { type: Object, notify: true, readonly: true },
+          pagination: { type: Object, readonly: true },
+        }
+      }
+      static get observers() {
+        return [
+          '__getData(token, baseDate, sort, limit)'
+        ]
+      }
+
+      async __getData(token, baseDate, sort, limit) {
+        if (token && baseDate && sort && limit) {
+          let paramStg = this.__serializeQueryParams(this.__parseQueryParams(baseDate, sort, limit));
+          let hdrs = new Headers({ 'Authorization': `Bearer ${token}` });
+          let response = await fetch(`https://api.fitbit.com/1/user/-/activities/list.json?${paramStg}`, { headers: hdrs });
+          response.json().then(json => {
+            this.data = json.activities;
+            this.pagination = json.pagination;
+          })
+        } else {
+          this.data = null;
+        }
+      }
+      __parseQueryParams(baseDate, sort, limit) {
+        if (sort !== 'asc' && sort !== 'desc') return null;
+        let params = { sort, limit, offset: 0 };
+        sort === 'asc'
+          ? params['afterDate'] = baseDate
+          : params['beforeDate'] = baseDate;
+        return params;
+      }
+      __serializeQueryParams(params) {
+        return Object.keys(params).reduce((a,c) => a.concat(`${c}=${params[c]}&`), '');
+      }
+      async previous() {
+        let hdrs = new Headers({ 'Authorization': `Bearer ${this.token}` });
+        let url = this.data.pagination.previous;
+        let response = await fetch(url, { headers: hdrs });
+        response.json().then(json => {
+          this.data = json.activities;
+          this.pagination = json.pagination;
+        })
+      }
+      async next() {
+        let hdrs = new Headers({ 'Authorization': `Bearer ${this.token}` });
+        let url = this.data.pagination.next;
+        let response = await fetch(url, { headers: hdrs });
+        response.json().then(json => {
+          this.data = json.activities;
+          this.pagination = json.pagination;
+        })
+      }
+    }
+
+    window.customElements.define(FitbitActivityLogList.is, FitbitActivityLogList);
+  </script>
+</dom-module>
+
+<!-- /1/user/-/activities/list.json
+Query: {
+  beforeDate: yyyy-MM-dd,
+  afterDate: yyyy-MM-dd,
+  sort: asc | desc,
+  limit: <=20,
+  offset: 0
+} -->

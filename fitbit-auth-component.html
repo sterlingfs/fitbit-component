@@ -11,7 +11,7 @@
           redirectURI: String,
           expiration: {
             type: Number,
-            value: 3154000
+            value: 2592000
           }, 
           scope: {
             type: Array,
@@ -22,20 +22,22 @@
       static defaultScope() {
         return ['activity', 'heartrate', 'location', 'nutrition', 'profile', 'settings', 'sleep', 'social', 'weight'] 
       }
+
       authorize() {
         console.log('authorizing...')
+
+        localStorage.setItem('myCat', 'Tom');
+
+        return;
+
+
         try {
           let path = `https://www.fitbit.com/oauth2/authorize?`
-          let params = `response_type=token&client_id=${this.clientId}&redirect_uri=${this.redirectURI}&scope=${encodeURI(this.scope.join(','))}&expires_in=${this.expiration}`
+          let params = `response_type=token&client_id=${this.clientId}&redirect_uri=${encodeURIComponent(this.redirectURI)}&scope=${encodeURI(this.scope.join(' '))}&expires_in=${this.expiration}`
           window.location = path + params;
         } catch(e) {
           console.error('FitbitAuthComponent config error:', e)
         }
-      }
-
-      connectedCallback() {
-        super.connectedCallback();
-        this.authorize();
       }
     }
 
