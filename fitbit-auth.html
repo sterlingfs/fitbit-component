@@ -29,11 +29,11 @@
 
       connectedCallback() {
         super.connectedCallback()
-        let hash = new String(window.location.hash);
+        let hash = window.location.hash.toString();
         if (hash.length > 0) {
-          window.location.hash = '';
-          this.token = this.__parseHash(hash)['access_token']
+          this.token = this.__parseHash(hash).access_token;
           window.localStorage.setItem('fitbit_access_token', this.token);
+          window.location = this.redirectUri;
         }
       }
       __authorizationURL() {
@@ -56,12 +56,14 @@
         }
       }
       async __getUser(token) {
+        if (!token) return;
         let hdrs = new Headers({ 'Authorization': `Bearer ${token}` });
         let response = await fetch('https://api.fitbit.com/1/user/-/profile.json', { headers: hdrs });
         let user = await response.json();
         user.then(json => this.user = json);
       }
       async __getUserBadges(token) {
+        if (!token) return;
         let hdrs = new Headers({ 'Authorization': `Bearer ${token}` });
         let response = await fetch('https://api.fitbit.com/1/user/-/badges.json', { headers: hdrs });
         let badges = await response.json();
