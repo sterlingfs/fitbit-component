@@ -92,8 +92,7 @@
       }
       async previous() {
         let hdrs = new Headers({ 'Authorization': `Bearer ${this.token}` });
-        let url = this.data.pagination.previous;
-        let response = await fetch(url, { headers: hdrs });
+        let response = await fetch(this.pagination.previous, { headers: hdrs });
         response.json().then(json => {
           this.data = json.activities;
           this.pagination = json.pagination;
@@ -101,8 +100,7 @@
       }
       async next() {
         let hdrs = new Headers({ 'Authorization': `Bearer ${this.token}` });
-        let url = this.data.pagination.next;
-        let response = await fetch(url, { headers: hdrs });
+        let response = await fetch(this.pagination.next, { headers: hdrs });
         response.json().then(json => {
           this.data = json.activities;
           this.pagination = json.pagination;

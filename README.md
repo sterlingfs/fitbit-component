@@ -1,9 +1,15 @@
-# \<fitbit-component\>
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg?style=flat-square)](https://www.webcomponents.org/element/bradysterling/fitbit-component)
+
+
+# fitbit-component
 
 Fitbit interface for the polymer library
 
+## Installation
 
-# \<fitbit-auth\>
+    $ bower install fitbit-component --save
+
+## \<fitbit-auth\>
 
 Example Usage:
 
@@ -14,7 +20,7 @@ Example Usage:
     </fitbit-auth>
 
 
-# \<fitbit-daily-activity-summary\>
+## \<fitbit-daily-activity-summary\>
 
 Example Usage:
 
@@ -22,7 +28,7 @@ Example Usage:
       date="2017-08-01">
     </fitbit-daily-activity-summary>
 
-# \<fitbit-activity-log-list\>
+## \<fitbit-activity-log-list\>
 
 Example Usage:
 
@@ -35,7 +41,7 @@ Example Usage:
     </fitbit-activity-log-list>
 
 
-# \<fitbit-activity-time-series\>
+## \<fitbit-activity-time-series\>
 
 Example Usage:
 
@@ -46,9 +52,9 @@ Example Usage:
       data="{{data}}">
     </fitbit-activity-time-series>
 
-## Options
+### Options
 
-### Resource paths
+#### Resource paths
  
 - activities/calories  
 - activities/caloriesBMR  
