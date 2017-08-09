@@ -7,7 +7,6 @@
       static get is() { return 'fitbit-auth'; }
       static get properties() {
         return {
-          signedIn: { type: Boolean, notify: true, readonly: true },
           token: { type: String, notify: true, readonly: true, value: window.localStorage.getItem('fitbit_access_token') },
           user: { type: Object, notify: true, readonly: true },
           userBadges: { type: Object, notify: true },
